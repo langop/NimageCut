@@ -96,7 +96,7 @@ var CopperLocal = (function(copperLocal){
 	                    marginTop: -e.y / imageScaledRatio
 	                  });
 	                });
-	             }
+	            }
 	        });
 	    };
 	}
