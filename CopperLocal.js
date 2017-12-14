@@ -141,25 +141,31 @@ var CopperLocal = (function(copperLocal){
 		//确认点击
 	    //1. ajax上传file
 	    //2. 将裁减图片添加到主页面
-	    $('#' + config.chooseId).click(function(){
-	    	var copperImg = $('#mineImg').cropper('getCroppedCanvas').toDataURL($('#mineImg').data('type'));
-	    	$.blockUI();
-	    	var formTmp = new FormData();
-	    	formTmp.append("copperImage", encodeURIComponent(copperImg));
-	    	$.ajax({
-	    		type: 'post',
-	    		url: config.uploadUrl,
-	    		data: formTmp,
-	    		cache: false,
-	    		processData: false, //必须
-	    		contentType : false, //必须
-	    		success: function(data){
-	    			if(typeof config.uploadCallback == 'function'){
-	    				config.uploadCallback(data);
-	    			}
-	    		}
-	    	});
-	    });
+		if($('#' + config.chooseId).length != 0){
+			$('#' + config.chooseId).click(function(){
+		    	var copperImg = $('#mineImg').cropper('getCroppedCanvas').toDataURL($('#mineImg').data('type'));
+		    	$.blockUI();
+		    	var formTmp = new FormData();
+		    	formTmp.append("copperImage", encodeURIComponent(copperImg));
+		    	if(!!config.uploadUrl){
+		    		$.ajax({
+			    		type: 'post',
+			    		url: config.uploadUrl,
+			    		data: formTmp,
+			    		cache: false,
+			    		processData: false, //必须
+			    		contentType : false, //必须
+			    		success: function(data){
+			    			if(typeof config.uploadCallback == 'function'){
+			    				config.uploadCallback(data);
+			    			}
+			    		}
+			    	});
+		    	}else{
+		    		alertify.error("需配置服务器上传地址: uploadUrl");
+		    	}
+		    });
+		}
 	};
 	
 	//config
