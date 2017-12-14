@@ -59,7 +59,7 @@ var CopperLocal = (function(copperLocal){
 	        var $previews = $('._CopperLocal_preview');
 	        $('#mineImg').cropper({
 	        	viewMode: 1,
-	        	aspectRatio: 1,
+	        	//aspectRatio: 1,
 	            dragMode: 'move',
 	            restore: false,
 	            guides: false,
