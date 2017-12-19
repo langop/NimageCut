@@ -144,7 +144,6 @@ var CopperLocal = (function(copperLocal){
 		if($('#' + config.chooseId).length != 0){
 			$('#' + config.chooseId).click(function(){
 		    	var copperImg = $('#mineImg').cropper('getCroppedCanvas').toDataURL($('#mineImg').data('type'));
-		    	$.blockUI();
 		    	var formTmp = new FormData();
 		    	formTmp.append("copperImage", encodeURIComponent(copperImg));
 		    	if(!!config.uploadUrl){
