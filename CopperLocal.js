@@ -1,4 +1,4 @@
-//**********************copper image***********************//
+//**********************ud copper image***********************//
 /**
  * 适用页面中上传图片，单选单存在情况
  * 1.最多设置3个预览块
@@ -12,7 +12,9 @@ var CopperLocal = (function(copperLocal){
 		previewId: "", 
 		chooseId: "",
 		uploadUrl: "",
-		uploadCallback: null
+		beforeUpload: null, //function
+		uploadCallback: null, //function
+		aspectRatio: 0 //长宽比
 	};
 	
 	/* 基础HTML
@@ -48,6 +50,18 @@ var CopperLocal = (function(copperLocal){
 		}
 	}
 	
+	//将以base64数据转换为Blob  
+    function convertBase64UrlToBlob(b64Data){  
+        var bytes = window.atob(b64Data.split(',')[1]); //去掉url的头，并转换为byte  
+        var ab = new ArrayBuffer(bytes.length);  
+        
+        var ia = new Uint8Array(ab);  
+        for (var i = 0; i < bytes.length; i++) {  
+            ia[i] = bytes.charCodeAt(i); //处理异常,将ascii码小于0的转换为大于0
+        }  
+        return new Blob([ia], {type : $('#mineImg').data('type')});  
+    }
+	
 	//读取选中图片
 	function reads(imgFile){
 	    var reader = new FileReader();
@@ -59,7 +73,7 @@ var CopperLocal = (function(copperLocal){
 	        var $previews = $('._CopperLocal_preview');
 	        $('#mineImg').cropper({
 	        	viewMode: 1,
-	        	//aspectRatio: 1,
+	        	aspectRatio: config.aspectRatio,
 	            dragMode: 'move',
 	            restore: false,
 	            guides: false,
@@ -78,6 +92,8 @@ var CopperLocal = (function(copperLocal){
 	                $previews.css({
 	                  overflow: 'hidden'
 	                }).html($clone);
+	                
+	                $('#' + config.chooseId).removeAttr('disabled');
 	            },
 	            crop: function (e) {
 	                var imageData = $(this).cropper('getImageData');
@@ -102,7 +118,7 @@ var CopperLocal = (function(copperLocal){
 	}
 	
 	//入口：初始化
-	copperLocal.init = function(){
+	var init = function(){
 		//选择区
 		$('#' + config.id).append(mainHtml());
 		$('#CopperLocal_show').attr('style', 'width:300px; height:300px; border:1px solid #e2e2e2; margin-top:10px'); 
@@ -139,14 +155,17 @@ var CopperLocal = (function(copperLocal){
 	    });
 		
 		//确认点击
-	    //1. ajax上传file
+	    //1. ajax上传file,模拟file表单提交
 	    //2. 将裁减图片添加到主页面
 		if($('#' + config.chooseId).length != 0){
 			$('#' + config.chooseId).click(function(){
 		    	var copperImg = $('#mineImg').cropper('getCroppedCanvas').toDataURL($('#mineImg').data('type'));
 		    	var formTmp = new FormData();
-		    	formTmp.append("copperImage", encodeURIComponent(copperImg));
+		    	formTmp.append("copperImage", convertBase64UrlToBlob(copperImg));
 		    	if(!!config.uploadUrl){
+		    		if(typeof config.beforeUpload == 'function'){
+	    				config.beforeUpload();
+	    			}
 		    		$.ajax({
 			    		type: 'post',
 			    		url: config.uploadUrl,
@@ -175,7 +194,7 @@ var CopperLocal = (function(copperLocal){
 			}
 		}
 		
-		copperLocal.init();
+		init();
 	};
 	
 	//清空选择
@@ -192,4 +211,4 @@ var CopperLocal = (function(copperLocal){
 	return copperLocal;
 	
 })(CopperLocal || {});
-//**********************copper image***********************//
+//**********************ud copper image***********************//
