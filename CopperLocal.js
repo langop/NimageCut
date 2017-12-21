@@ -14,7 +14,7 @@ var CopperLocal = (function(copperLocal){
 		uploadUrl: "",
 		beforeUpload: null, //function
 		uploadCallback: null, //function
-		aspectRatio: 0 //长宽比
+		aspectRatio: 0 //长宽比，默认不限制
 	};
 	
 	/* 基础HTML
@@ -204,6 +204,9 @@ var CopperLocal = (function(copperLocal){
 		$('#' + config.id).html('');
 		$('#' + config.previewId).html('');
     	
+		//重新置灰，选择按钮
+		$('#' + config.chooseId).attr('disabled', 'disabled');
+		
     	//清空file value
     	$("#CopperLocal_upload").val('');
 	};
