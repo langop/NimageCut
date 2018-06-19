@@ -1,0 +1,36 @@
+#类似merge，将fetch的远程代码先与本地所有提交前的代码合并，然后再把本地所有的提交（commit id）应用到合并代码中
+git rebase
+#当前目录下，创建并初始化一个代码库
+git init Project_Folder_xxx
+#当前目录下，拉取远程库代码，创建本地代码库
+git clone Project_Folder_xxx.git
+
+#创建并切换到lxj
+git checkout -b lxj
+git checkout -b lxj remoteName/branchName
+#重命名分支
+git branch -m lxj lxjNew
+
+#提交当前目录下所有变动至index/stage区
+git add .
+#将暂存区代码提交至本地代码库
+git commit -m 'comment'
+#组合指令
+git commit -am 'comment'
+
+git commit --amend -m 'comment'
+
+
+
+git branch --set-upstream local_name origin/remote_name
+git branch --set-upstram-to origin/remote_name
+git push -u origin remote_name
+
+
+git status
+git branch
+git branch -a
+git branch -r
+git branch show origin
+git branch -vv
+
