@@ -11,16 +11,35 @@ git checkout -b lxj remoteName/branchName
 #重命名分支
 git branch -m lxj lxjNew
 
-#提交当前目录下所有变动至index/stage区
+#提交当前目录下所有变动至stage区(index)
 git add .
 #将暂存区代码提交至本地代码库
 git commit -m 'comment'
 #组合指令
 git commit -am 'comment'
-
+#1，修改最后一次commit的注释 2，将本次commit的内容加入最后一次commit，并使用新的注释
 git commit --amend -m 'comment'
 
+##比较（W:工作区   S:暂存区  L:本地仓库）
+#W:S
+git diff [文件]
+#S:L
+git diff --cached [文件]
+#W:L 
+git diff HEAD [文件]
+#指定commitid互相比较
+git diff commit_id commit_id_2
+#创建W:S间的补丁包
+git diff > patchname_xxx
+git apply patchname_xxx
 
+##查看commit记录
+#查看最近三次详情，参数--oneline简略查看
+git log -3 [--oneline]
+
+##回退commit
+#默认回退到add前状态，--soft是commit前状态，--hard是回退版本后的代码全覆盖
+git reset commit_id
 
 git branch --set-upstream local_name origin/remote_name
 git branch --set-upstram-to origin/remote_name
@@ -33,4 +52,3 @@ git branch -a
 git branch -r
 git branch show origin
 git branch -vv
-
