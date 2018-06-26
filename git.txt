@@ -1,3 +1,6 @@
+一，HEAD表示当前版本，最新的commit位置
+二，删除本地仓库已存在的文件，直接commit，无需add；
+
 #类似merge，将fetch的远程代码先与本地所有提交前的代码合并，然后再把本地所有的提交（commit id）应用到合并代码中
 git rebase
 #当前目录下，创建并初始化一个代码库
@@ -11,6 +14,7 @@ git checkout -b lxj remoteName/branchName
 #重命名分支
 git branch -m lxj lxjNew
 
+	
 #提交当前目录下所有变动至stage区(index)
 git add .
 #将暂存区代码提交至本地代码库
@@ -20,8 +24,23 @@ git commit -am 'comment'
 #1，修改最后一次commit的注释 2，将本次commit的内容加入最后一次commit，并使用新的注释
 git commit --amend -m 'comment'
 
+
+##查看commit记录（-p内容差异详情   --stat行数差异详情  --pretty=[oneline][format:""]指定格式显示log  --gragh分支及其分化衍合情况）
+[git log --pretty=format:"%Cblue%h%Creset %s (%Cred%cr%Creset) %cn - %an" --graph]
+#查看最近三次详情
+git log -3 [--oneline]
+#查看某文件的历史记录
+git log -- <path>
+
+
+#查看最近的所有操作记录
+git reflog -n
+#查看某文件的历史修改内容
+git show commitid [filename]
+
+
 ##比较（W:工作区   S:暂存区  L:本地仓库）
-#W:S
+#S:W
 git diff [文件]
 #S:L
 git diff --cached [文件]
@@ -32,23 +51,52 @@ git diff commit_id commit_id_2
 #创建W:S间的补丁包
 git diff > patchname_xxx
 git apply patchname_xxx
+（+开头的行，是只出现在目标文件中的行，一般W作为目标文件）
 
-##查看commit记录
-#查看最近三次详情，参数--oneline简略查看
-git log -3 [--oneline]
 
-##回退commit
-#默认回退到add前状态，--soft是commit前状态，--hard是回退版本后的代码全覆盖
-git reset commit_id
+#远程同步
+git remote -v（查看所有nickName对应的url）
+git remote add <nickName> <url>
+git remote show <nickName>
+git remote remove <nickName>
+git fetch <nickName>	
+git push <nickName> <branchName|-all>
 
+
+#设置追踪关系
 git branch --set-upstream local_name origin/remote_name
-git branch --set-upstram-to origin/remote_name
+git branch --set-upstream-to origin/remote_name
 git push -u origin remote_name
 
 
-git status
-git branch
+#查看所有分支状态
 git branch -a
+#查看工作区的分支状态
+git branch -v
+git branch -vv（包含了分支与远程分支的追踪关系）
+#查看远程分支
 git branch -r
-git branch show origin
-git branch -vv
+
+
+/************* 回滚操作 ****************/
+##revert##
+#a，在工作区撤销某次提交，并自动提交一个新common_id
+#b，若存在冲突，解决冲突后，先add相应文件，然后git revert --continue表示结束，会自动提交新common_id
+#c，可使用git revert --abort取消本次revert
+git revert <commit_id>
+
+##reset【移动HEAD（branch tip也会随之移动）的指向】##
+语法一：git reset [commitid] [--] <paths>
+#不重置HEAD，不改变W区代码，只是将目标提交的代码覆盖到index
+
+语法二：git reset [--options] [commitid]
+#--soft，重置HEAD到目标提交并将源HEAD的代码覆盖到index
+#--mixed（默认）， 重置HEAD到目标提交并将目标提交的代码覆盖到index
+#--hard，重置HEAD到目标提交并（W+S）代码全覆盖
+
+
+##checkout##
+#从S恢复到W
+git checkout .
+#从L恢复到W、S，一般用于测试某个提交的代码
+git checkout -b test_branch commitid
